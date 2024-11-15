@@ -1,7 +1,8 @@
 import { connect } from "mongoose";
+import { DB_URL } from "../config/config.js";
 
 export const configConnection = {
-	url: "mongodb+srv://francisArturo:ecommerceCoder@cluster0.3nmw0of.mongodb.net/",
+	url: DB_URL as string,
 	options: {
 		dbName: "vg-app-dev",
 	},
