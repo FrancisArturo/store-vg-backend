@@ -8,7 +8,16 @@ type Category = {
 
 export const getProducts = async (req: Request, res: Response) => {
 	try {
-		const products = await productsModel.find();
+		const { page, cat } = req.query;
+
+		const products =
+			cat !== "undefined"
+				? await productsModel.paginate(
+						{ categorySlug: cat },
+						{ page: Number(page), limit: 12 },
+					)
+				: await productsModel.paginate({}, { page: Number(page), limit: 12 });
+
 		res.status(200).json({
 			ok: true,
 			products,

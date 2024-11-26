@@ -1,6 +1,8 @@
-import { model, Schema } from "mongoose";
+import mongoose from "mongoose";
+import paginate from "mongoose-paginate-v2";
+import type { ProductData } from "../types";
 
-const productSchema = new Schema({
+const productsSchema = new mongoose.Schema({
 	id: {
 		type: "Number",
 	},
@@ -88,10 +90,17 @@ const productSchema = new Schema({
 	},
 });
 
+productsSchema.plugin(paginate);
+
+interface ProductsDocument extends mongoose.Document, ProductData {}
+
 // productSchema.method("toJson", () => {
 // 	const { _id, __v, ...object } = this.toObject();
 // 	object.id = _id;
 // 	return object;
 // });
 
-export const productsModel = model("products", productSchema);
+export const productsModel = mongoose.model<
+	ProductsDocument,
+	mongoose.PaginateModel<ProductsDocument>
+>("Products", productsSchema, "products");
