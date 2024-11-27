@@ -31,6 +31,25 @@ export const getProducts = async (req: Request, res: Response) => {
 	}
 };
 
+export const getProductById = async (req: Request, res: Response) => {
+	try {
+		const { sku } = req.params;
+
+		const product = await productsModel.findOne({ sku: sku });
+
+		res.status(200).json({
+			ok: true,
+			product,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			ok: false,
+			message: "Get product error",
+		});
+	}
+};
+
 export const getCategories = async (req: Request, res: Response) => {
 	try {
 		const products = await productsModel.find();
