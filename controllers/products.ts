@@ -6,21 +6,38 @@ type Category = {
 	quantity: number;
 };
 
+type Query = {
+	categorySlug?: string;
+	brand?: string;
+	price?: object;
+};
+
 export const getProducts = async (req: Request, res: Response) => {
 	try {
-		const { page, cat } = req.query;
+		const { page, cat, brand, minPrice, maxPrice } = req.query;
 
-		const products =
-			cat !== "undefined"
-				? await productsModel.paginate(
-						{ categorySlug: cat },
-						{ page: Number(page), limit: 12 },
-					)
-				: await productsModel.paginate({}, { page: Number(page), limit: 12 });
+		const query: Query = {};
+		if (cat !== "undefined") {
+			query.categorySlug = cat as string;
+		}
+		if (brand) {
+			query.brand = brand as string;
+		}
+		if (Number(maxPrice) !== 0) {
+			query.price = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+		}
+
+		const totalProducts = await productsModel.find(query);
+
+		const products = await productsModel.paginate(query, {
+			page: Number(page),
+			limit: 10,
+		});
 
 		res.status(200).json({
 			ok: true,
 			products,
+			totalProducts,
 		});
 	} catch (error) {
 		console.log(error);
