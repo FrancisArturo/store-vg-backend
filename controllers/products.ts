@@ -6,17 +6,26 @@ type Category = {
 	quantity: number;
 };
 
+type Price = {
+	$gte: number;
+	$lte?: number;
+};
+
 type Query = {
 	categorySlug?: string;
 	brand?: string;
-	price?: object;
+	price: Price;
 };
 
 export const getProducts = async (req: Request, res: Response) => {
 	try {
 		const { page, cat, brand, minPrice, maxPrice } = req.query;
 
-		const query: Query = {};
+		const query: Query = {
+			price: {
+				$gte: Number(minPrice),
+			},
+		};
 		if (cat !== "undefined") {
 			query.categorySlug = cat as string;
 		}
@@ -24,7 +33,7 @@ export const getProducts = async (req: Request, res: Response) => {
 			query.brand = brand as string;
 		}
 		if (Number(maxPrice) !== 0) {
-			query.price = { $gte: Number(minPrice), $lte: Number(maxPrice) };
+			query.price.$lte = Number(maxPrice);
 		}
 
 		const totalProducts = await productsModel.find(query);
