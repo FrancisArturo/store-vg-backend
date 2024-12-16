@@ -4,7 +4,7 @@ export interface ProductData {
 	description: string;
 	category: string;
 	categorySlug: string;
-	price: number;
+	price: Price;
 	discountPercentage: number;
 	rating: number;
 	stock: number;
@@ -25,6 +25,11 @@ export interface ProductData {
 	images: string[];
 	imagesSlider: string[];
 	thumbnail: string;
+}
+
+export interface Price {
+	usd: number;
+	eur: number;
 }
 
 export interface Dimensions {

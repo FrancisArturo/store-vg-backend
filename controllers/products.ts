@@ -6,7 +6,7 @@ type Category = {
 	quantity: number;
 };
 
-type Price = {
+type PriceFilter = {
 	$gte: number;
 	$lte?: number;
 };
@@ -14,18 +14,26 @@ type Price = {
 type Query = {
 	categorySlug?: string;
 	brand?: string;
-	price: Price;
+	"price.usd"?: PriceFilter;
+	"price.eur"?: PriceFilter;
 };
 
 export const getProducts = async (req: Request, res: Response) => {
 	try {
-		const { page, cat, brand, minPrice, maxPrice } = req.query;
+		const { page, currency, cat, brand, minPrice, maxPrice } = req.query;
 
-		const query: Query = {
-			price: {
-				$gte: Number(minPrice),
-			},
-		};
+		const query: Query =
+			currency === "usd"
+				? {
+						"price.usd": {
+							$gte: Number(minPrice),
+						},
+					}
+				: {
+						"price.eur": {
+							$gte: Number(minPrice),
+						},
+					};
 		if (cat !== "undefined") {
 			query.categorySlug = cat as string;
 		}
@@ -33,10 +41,15 @@ export const getProducts = async (req: Request, res: Response) => {
 			query.brand = brand as string;
 		}
 		if (Number(maxPrice) !== 0) {
-			query.price.$lte = Number(maxPrice);
+			if (currency === "usd" && query["price.usd"]) {
+				query["price.usd"].$lte = Number(maxPrice);
+			}
+			if (currency === "eur" && query["price.eur"]) {
+				query["price.eur"].$lte = Number(maxPrice);
+			}
 		}
 
-		const totalProducts = await productsModel.find(query);
+		const totalProducts = await productsModel.find();
 
 		const products = await productsModel.paginate(query, {
 			page: Number(page),

@@ -16,7 +16,12 @@ const productsSchema = new mongoose.Schema({
 		type: "String",
 	},
 	price: {
-		type: "Number",
+		usd: {
+			type: "Number",
+		},
+		eur: {
+			type: "Number",
+		},
 	},
 	discountPercentage: {
 		type: "Number",
@@ -31,6 +36,9 @@ const productsSchema = new mongoose.Schema({
 		type: ["String"],
 	},
 	brand: {
+		type: "String",
+	},
+	logo: {
 		type: "String",
 	},
 	sku: {
@@ -59,6 +67,9 @@ const productsSchema = new mongoose.Schema({
 	availabilityStatus: {
 		type: "String",
 	},
+	reviewsNumber: {
+		type: "Number",
+	},
 	reviews: {
 		type: ["Mixed"],
 	},
@@ -83,6 +94,9 @@ const productsSchema = new mongoose.Schema({
 		},
 	},
 	images: {
+		type: ["String"],
+	},
+	imagesSlider: {
 		type: ["String"],
 	},
 	thumbnail: {
