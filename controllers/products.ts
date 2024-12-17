@@ -49,7 +49,7 @@ export const getProducts = async (req: Request, res: Response) => {
 			}
 		}
 
-		const totalProducts = await productsModel.find();
+		const totalProducts = await productsModel.find(query);
 
 		const products = await productsModel.paginate(query, {
 			page: Number(page),
