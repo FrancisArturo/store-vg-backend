@@ -48,8 +48,9 @@ export const getProducts = async (req: Request, res: Response) => {
 				query["price.eur"].$lte = Number(maxPrice);
 			}
 		}
+		const totalProducts = await productsModel.find();
 
-		const totalProducts = await productsModel.find(query);
+		const totalProductsWithQuery = await productsModel.find(query);
 
 		const products = await productsModel.paginate(query, {
 			page: Number(page),
@@ -60,6 +61,7 @@ export const getProducts = async (req: Request, res: Response) => {
 			ok: true,
 			products,
 			totalProducts,
+			totalProductsWithQuery,
 		});
 	} catch (error) {
 		console.log(error);
